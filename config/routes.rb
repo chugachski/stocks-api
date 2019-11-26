@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: {format: :json} do
     get '/prices', to: 'stocks#prices'
-    get '/symbols', to: 'stocks#symbols'
+    get '/companies', to: 'stocks#companies'
   end
 
 end

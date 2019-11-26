@@ -25,6 +25,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # HTTP client library
 gem 'faraday', '~> 0.17.0'
 
+# Descriptive stats library
+gem 'descriptive_statistics', '~> 2.5.1'
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
