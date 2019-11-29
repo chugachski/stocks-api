@@ -1,19 +1,19 @@
 require 'faraday'
 
 class Api::StocksController < ApplicationController
-  include Calculate
-
-  def prices
-    prices = AlphaVantage::Stock.get_monthly_prices({ symbol: params[:symbol] })
-    min_2018 = calc_min(prices['2018'])
-    max_2018 = calc_max(prices['2018'])
-    avg_2018 = calc_avg(prices['2018'])
-    volatility_2018 = calc_volatility(prices['2018'])
-    annual_change_2018 = calc_annual_percent_change(prices['2018'])
+  # GET /api/companies
+  def symbols
+    @symbols = ExternalApi::Stock.lookup_companies({ keywords: params[:name] })
   end
 
-  def companies
-    @companies = AlphaVantage::Stock.lookup_companies({ q: params[:name] })
+  # POST /api/stats
+  def stats
+    stats_by_year = ExternalApi::Stock.get_monthly_prices({ symbol: params[:symbol] }) # array of hashes that are indexed by year
+    puts "==> stats by year: #{stats_by_year}"
+
+    binding.pry
+    @stats_profile = StatsProfile.new(stats_by_year[0]['2016'])
+    # puts "@stats profile: #{@stats_profile}"
   end
 
   private

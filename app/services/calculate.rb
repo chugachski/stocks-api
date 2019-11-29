@@ -19,7 +19,7 @@ module Calculate
     values.standard_deviation
   end
 
-  def calc_annual_percent_change(values = [])
+  def calc_annual_change(values = [])
     values.last - values.first / values.first * 100
   end
 end

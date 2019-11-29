@@ -26,7 +26,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'faraday', '~> 0.17.0'
 
 # Descriptive stats library
-gem 'descriptive_statistics', '~> 2.5.1'
+gem 'descriptive_statistics', '~> 2.5.1', require: 'descriptive_statistics/safe'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -36,6 +36,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.9.0'
   gem 'dotenv-rails', '~> 2.7.5'
+  gem 'pry-rails'
+  gem 'binding_of_caller'
 end
 
 group :test do
