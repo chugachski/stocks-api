@@ -1,25 +1,33 @@
-require 'descriptive_statistics'
+# based of of source: https://stackoverflow.com/a/21143604/12419324
 
 module Calculate
-  extend ActiveSupport::Concern
-
-  def calc_min(values = [])
+  def self.calc_min(values = [])
     values.min
   end
 
-  def calc_max(values = [])
+  def self.calc_max(values = [])
     values.max
   end
 
-  def calc_avg(values = [])
-    values.inject(0.0) { |sum, el| sum + el } / values.size
+  def self.calc_sum(values = [])
+    values.inject(0){ |accum, i| accum + i }
   end
 
-  def calc_volatility(values = [])
-    values.standard_deviation
+  def self.calc_avg(values = [])
+    calc_sum(values) / values.length.to_f
   end
 
-  def calc_annual_change(values = [])
+  def self.calc_annual_change(values = [])
     values.last - values.first / values.first * 100
+  end
+
+  def self.calc_sample_variance(values = [])
+    m = calc_avg(values)
+    sum = values.inject(0) { |accum, i| accum + (i - m) ** 2 }
+    sum / (values.length - 1).to_f
+  end
+
+  def self.calc_volatility(values = [])
+    Math.sqrt(calc_sample_variance(values))
   end
 end

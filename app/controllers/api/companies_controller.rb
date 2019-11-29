@@ -1,3 +1,5 @@
+require 'faraday'
+
 class Api::CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :update, :destroy]
 
@@ -34,6 +36,11 @@ class Api::CompaniesController < ApplicationController
   def destroy
     @company.destroy
     head :no_content
+  end
+
+  # GET /api/companies/symbols?name=coke
+  def symbols
+    @symbols = ExternalApi::Stock.lookup_companies({ keywords: params[:name] })
   end
 
   private

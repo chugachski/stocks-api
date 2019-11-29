@@ -8,12 +8,16 @@ class Api::StocksController < ApplicationController
 
   # POST /api/stats
   def stats
-    stats_by_year = ExternalApi::Stock.get_monthly_prices({ symbol: params[:symbol] }) # array of hashes that are indexed by year
-    puts "==> stats by year: #{stats_by_year}"
+    stats_by_year = ExternalApi::Stock.get_monthly_prices({ symbol: params[:symbol] })
 
+    stats_profiles = {}
+    stats_by_year.each do |year, stats|
+      stats_profile = StatsProfile.new(stats)
+      stats_profiles[year] = stats_profile
+    end
     binding.pry
-    @stats_profile = StatsProfile.new(stats_by_year[0]['2016'])
-    # puts "@stats profile: #{@stats_profile}"
+
+    stats_profiles
   end
 
   private

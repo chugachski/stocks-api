@@ -2,8 +2,6 @@ require 'date'
 
 module ExternalApi
   class Stock
-    extend Calculate
-
     def self.lookup_companies(query = {})
       response = Request.where('alpha_vantage', 'query', query.merge({ function: 'SYMBOL_SEARCH', apikey: ENV['ALPHA_VANTAGE_KEY'] }))
       companies = response.fetch('bestMatches')
@@ -17,24 +15,17 @@ module ExternalApi
         year = month['date'][0..3]
         price_history[year] << month['close']
       end
-      # puts "==> price_history: #{price_history}"
 
-      stats_by_year = []
+      stats_by_year = {}
       price_history.each do |year, prices|
-        stats = Hash.new { |h, k| h[k]=[] }
-        stats[year] << {min: calc_min(prices)}
-        stats[year] << {max: calc_max(prices)}
-        stats[year] << {avg: calc_avg(prices)}
-        stats[year] << {volatility: calc_volatility(prices)}
-        stats[year] << {annual_change: calc_annual_change(prices)}
-        # puts "==> stats: #{stats}"
-        stats_by_year.push(stats)
+        stats = {}
+        stats[:min] = Calculate.calc_min(prices)
+        stats[:max] = Calculate.calc_max(prices)
+        stats[:avg] = Calculate.calc_avg(prices)
+        stats[:volatility] = Calculate.calc_volatility(prices)
+        stats[:annual_change] = Calculate.calc_annual_change(prices)
+        stats_by_year[year] = stats
       end
-
-      # stats_profiles = stats_by_year.map do |year|
-      #   stats_profile = year.map { |y, attrs| Stock.new(attrs) }
-      # end
-      # puts "==> stats profiles: #{stats_profiles}"
 
       stats_by_year
     end
