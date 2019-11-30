@@ -15,20 +15,15 @@ module ExternalApi
         year = month['date'][0..3]
         price_history[year] << month['close']
       end
-      # binding.pry
 
-      # stats_by_year = {}
       stats = {}
       price_history.each do |year, prices|
-        # stats = {}
         stats[:min] = Calculate.calc_min(prices)
         stats[:max] = Calculate.calc_max(prices)
         stats[:avg] = Calculate.calc_avg(prices)
         stats[:volatility] = Calculate.calc_volatility(prices)
         stats[:annual_change] = Calculate.calc_annual_change(prices)
-        # stats_by_year[year] = stats
       end
-      # binding.pry
 
       stats
     end

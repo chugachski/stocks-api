@@ -5,7 +5,7 @@ class Api::CompaniesController < ApplicationController
 
   # GET /api/companies
   def index
-    @companies = Company.all
+    @companies = Company.order(name: :asc)
   end
 
   # GET /api/companies/1
