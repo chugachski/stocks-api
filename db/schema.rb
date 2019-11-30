@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2019_11_26_234835) do
   end
 
   create_table "years", force: :cascade do |t|
-    t.integer "year"
+    t.string "year"
     t.integer "company_id"
     t.integer "stats_profile_id"
     t.datetime "created_at", precision: 6, null: false

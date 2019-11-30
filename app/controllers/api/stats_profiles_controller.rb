@@ -38,17 +38,16 @@ class Api::StatsProfilesController < ApplicationController
 
     # POST /api/stats_profiles/company
     def company
-      stats_by_year = ExternalApi::Stock.get_monthly_prices({ symbol: params[:stats_profile][:company][:symbol] })
+      symbol = params[:stats_profile][:company][:symbol]
+      year = params[:stats_profile][:company][:year]
 
-      stats_profiles = {}
-      stats_by_year.each do |year, stats|
-        @stats_profile = StatsProfile.new(stats)
-        # stats_profiles[year] = stats_profile
-        if @stats_profile.save
-          render :show, status: :created, location: api_stats_profile_url(@stats_profile)
-        else
-          render json: @stats_profile.errors, status: :unprocessable_entity
-        end
+      stats = ExternalApi::Stock.get_monthly_prices({ symbol: symbol, start: year + "-01-01", end: year + "-12-01" })
+
+      @stats_profile = StatsProfile.new(stats)
+      if @stats_profile.save
+        render :show, status: :created, location: api_stats_profile_url(@stats_profile)
+      else
+        render json: @stats_profile.errors, status: :unprocessable_entity
       end
     end
 
@@ -58,6 +57,6 @@ class Api::StatsProfilesController < ApplicationController
     end
 
     def stats_profile_params
-      params.require(:stats_profile).permit(:min, :max, :avg, :volatility, :annual_change, :company, :symbol)
+      params.require(:stats_profile).permit(:min, :max, :avg, :volatility, :annual_change, :company, :symbol, :year)
     end
 end
