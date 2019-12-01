@@ -10,7 +10,9 @@ Rails.application.routes.draw do
 
     resources :stats_profiles, except: [:new, :edit] do
       collection do
-        post :company
+        post :create_all_resources
+        get :all_companies_by_year
+        get :all_years_by_company
       end
     end
   end

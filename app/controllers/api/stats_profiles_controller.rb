@@ -3,7 +3,6 @@ class Api::StatsProfilesController < ApplicationController
 
     # GET /api/stats_profiles
     def index
-      # @stats_profiles = StatsProfile.searching(params)
       @stats_profiles = StatsProfile.all
     end
 
@@ -37,8 +36,8 @@ class Api::StatsProfilesController < ApplicationController
       head :no_content
     end
 
-    # POST /api/stats_profiles/company
-    def company
+    # POST /api/stats_profiles/create_all_resources
+    def create_all_resources
       symbol = stats_profile_company_params[:company][:symbol]
       name = stats_profile_company_params[:company][:name]
       year = stats_profile_company_params[:company][:year]
@@ -54,6 +53,56 @@ class Api::StatsProfilesController < ApplicationController
       else
         render json: @stats_profile.errors, status: :unprocessable_entity
       end
+    end
+
+    def all_companies_by_year
+      @year = params["year"] # required
+      @stat = params["stat"].to_sym # required
+      order = params["order"].nil? ? :asc : params["order"].to_sym # optional
+
+      year_ids = Year.where(year: @year).map { |year| year.id }
+
+      case @stat
+      when :volatility
+        @stats_profiles = StatsProfile.by_ids(year_ids).by_volatility(order)
+      when :annual_change
+        @stats_profiles = StatsProfile.by_ids(year_ids).by_annual_change(order)
+      when :min
+        @stats_profiles = StatsProfile.by_ids(year_ids).by_min(order)
+      when :max
+        @stats_profiles = StatsProfile.by_ids(year_ids).by_max(order)
+      when :avg
+        @stats_profiles = StatsProfile.by_ids(year_ids).by_avg(order)
+      else
+        @stats_profiles = StatsProfile.all
+      end
+
+      render :all_companies_by_year, status: :ok
+    end
+
+    def all_years_by_company
+      company = params["symbol"].to_sym # required
+      @stat = params["stat"].to_sym # required
+      order = params["order"].nil? ? :asc : params["order"].to_sym # optional
+
+      company_ids = Company.where(symbol: "HD").map { |company| company.id }
+
+      case @stat
+      when :volatility
+        @stats_profiles = StatsProfile.by_ids(company_ids).by_volatility(order)
+      when :annual_change
+        @stats_profiles = StatsProfile.by_ids(company_ids).by_annual_change(order)
+      when :min
+        @stats_profiles = StatsProfile.by_ids(company_ids).by_min(order)
+      when :max
+        @stats_profiles = StatsProfile.by_ids(company_ids).by_max(order)
+      when :avg
+        @stats_profiles = StatsProfile.by_ids(company_ids).by_avg(order)
+      else
+        @stats_profiles = StatsProfile.all
+      end
+
+      render :all_years_by_company, status: :ok
     end
 
     private
