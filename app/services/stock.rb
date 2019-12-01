@@ -16,11 +16,12 @@ module ExternalApi
 
       stats = {}
       price_history.each do |year, prices|
-        stats[:min] = Calculate.calc_min(prices)
-        stats[:max] = Calculate.calc_max(prices)
-        stats[:avg] = Calculate.calc_avg(prices)
-        stats[:volatility] = Calculate.calc_volatility(prices)
-        stats[:annual_change] = Calculate.calc_annual_change(prices)
+        stats[:min] = Calculate.min(prices)
+        stats[:max] = Calculate.max(prices)
+        stats[:avg] = Calculate.avg(prices)
+        stats[:ending] = Calculate.ending(prices)
+        stats[:volatility] = Calculate.volatility(prices)
+        stats[:annual_change] = Calculate.annual_change(prices)
       end
 
       stats
