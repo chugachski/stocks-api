@@ -1,9 +1,17 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-
   namespace :api, defaults: {format: :json} do
-    get '/prices', to: 'stocks#prices'
-    get '/companies', to: 'stocks#companies'
-  end
+    resources :companies, except: [:new, :edit] do
+      collection do
+        get :symbols
+      end
+    end
 
+    resources :stats_profiles, except: [:new, :edit] do
+      collection do
+        post :create_all_resources
+        get :all_companies_by_year
+        get :all_years_by_company
+      end
+    end
+  end
 end

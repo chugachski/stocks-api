@@ -18,7 +18,8 @@ class Connection
   def self.alpha_vantage
    Faraday.new(url: ALPHA_VANTAGE_BASE) do |faraday|
      faraday.response :logger do |logger|
-       logger.filter(/(apikey=)(\w+)/,'\1[REMOVED]'))
+       logger.filter(/(apikey=)(\w+)/,'\1[REMOVED]')
+     end
      faraday.adapter Faraday.default_adapter
      faraday.headers['Accept'] = 'application/json'
      faraday.headers['Content-Type'] = 'application/json'

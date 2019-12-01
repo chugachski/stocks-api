@@ -1,7 +1,7 @@
 class CreateStatsProfiles < ActiveRecord::Migration[6.0]
   def change
     create_table :stats_profiles do |t|
-      t.company :references
+      t.references :company, null: false, foreign_key: true
       t.string :year
       t.float :min
       t.float :max

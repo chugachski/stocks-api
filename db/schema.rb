@@ -10,9 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2019_12_01_204103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "companies", force: :cascade do |t|
+    t.string "name"
+    t.string "symbol"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "stats_profiles", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "year"
+    t.float "min"
+    t.float "max"
+    t.float "avg"
+    t.float "ending"
+    t.float "volatility"
+    t.float "annual_change"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_stats_profiles_on_company_id"
+  end
+
+  add_foreign_key "stats_profiles", "companies"
 end
