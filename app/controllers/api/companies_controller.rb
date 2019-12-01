@@ -5,7 +5,9 @@ class Api::CompaniesController < ApplicationController
 
   # GET /api/companies
   def index
-    @companies = Company.order(name: :asc)
+    order_by = params[:order_by].to_sym
+    order = params[:order].nil? ? :asc : params[:order].to_sym
+    @companies = Company.order(order_by => order)
   end
 
   # GET /api/companies/1
@@ -40,7 +42,7 @@ class Api::CompaniesController < ApplicationController
 
   # GET /api/companies/symbols?name=coke
   def symbols
-    @symbols = ExternalApi::Stock.lookup_companies({ keywords: params[:name] })
+    @symbols = ExternalApi::Stock.lookup_symbols({ keywords: params[:name] })
   end
 
   private

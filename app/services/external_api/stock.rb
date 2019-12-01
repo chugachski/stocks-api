@@ -2,7 +2,7 @@ require 'date'
 
 module ExternalApi
   class Stock
-    def self.lookup_companies(query = {})
+    def self.lookup_symbols(query = {})
       response = Request.where('alpha_vantage', 'query', query.merge({ function: 'SYMBOL_SEARCH', apikey: ENV['ALPHA_VANTAGE_KEY'] }))
       companies = response.fetch('bestMatches')
     end
