@@ -1,11 +1,12 @@
 # Stocks API
+http://example.com
 
-## Dependencies
+### Dependencies
 - Rails version: 2.6.5
 - Ruby version: 6.0.1
 - postgresql: 10.10
 
-## Getting Started with local development
+### Getting Started with local development
 1. create `.env` at project root containing:
   - ALPHA_VANTAGE_KEY="example_key"
   - TRADIER_KEY="example_key"
@@ -16,48 +17,119 @@
   - in case of error: `FATAL: Peer authentication failed for user`, edit `pg_hba.conf` such that the method for local connections is `md5`
 4. rake db:migrate
 
+### Endpoint Documentation
+See examples of cURL requests in examples.md
 
-## Stats Profiles
-### get all stats profiles
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/stats_profiles
-  - curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles --data-urlencode sort=asc
+#### For all requests
+| Header       | Required | Value            |
+| ------------ | -------- | ---------------- |
+| Content-Type | Required | application/json |
 
-### get stats profiles for all companies by year
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_companies_by_year --data-urlencode year=2017 --data-urlencode stat=volatility --data-urlencode order=asc
+### Companies
+#### GET /api/companies
+| Parameter    | Type     | Required  | Values      | Default   |
+| ------------ | -------- | --------- | ----------- | --------- |
+| order        | string   | Optional  | asc, desc   | asc       |
 
-### get stats profiles for all years by company
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_years_by_company --data-urlencode symbol=HD --data-urlencode stat=annual_change --data-urlencode order=desc
+#### GET /api/stats_profiles/all_companies_by_year
+| Parameter    | Type     | Required  | Example values                                   | Default   |
+| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
+| year         | string   | Required  | 2018                                             | n/a       |
+| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
+| order        | string   | Optional  | asc, desc                                        | asc       |
 
-### get a stats profile
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/stats_profiles/11
+#### GET /api/stats_profiles/all_years_by_company
+| Parameter    | Type     | Required  | Example values                                   | Default   |
+| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
+| symbol       | string   | Required  | HD                                               | n/a       |
+| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
+| order        | string   | Optional  | asc, desc                                        | asc       |
 
-### create a stats profile
-- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles -d '{"stats_profile": {"company_id": 1, "year": "2014", "min": 34.54, "max": 39.90, "avg": 37.84, "ending": 36.64, "volatility": 1.65, "annual_change": 5.3}}'
+#### GET /api/companies/:id
 
-- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles/create_all_resources -d '{"stats_profile": {"company": {"symbol": "KODK", "name": "Eastman Kodak Company", "year": "2018"}}}'
+#### POST /api/companies
+Body Schema:
+```company:
+  type: object
+  properties:
+    name:
+      type: string
+      example: The Home Depot Inc.
+    symbol:
+      type: string
+      example: HD
+```
 
-### delete a stats profile
-- curl -v -H "Content-Type: application/json" -X DELETE http://localhost:3000/api/stats_profiles/9
+#### UPDATE /api/companies/:id
+Body Schema: see POST
+
+#### DELETE /api/companies/:id
+
+#### GET /api/companies/symbols
+Get a list of best matching symbols
+
+| Parameter    | Type     | Required  | Example value | Default   |
+| ------------ | -------- | --------- | ------------- | --------- |
+| name         | string   | Required  | home depot    | n/a       |
 
 
-## Companies
-### find symbols by company name
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies/symbols --data-urlencode 'name=home depot'
+### Stats Profiles
+#### GET /api/stats_profiles
 
-### get all companies
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies --data-urlencode 'order=desc'
+#### GET /api/stats_profiles/:id
 
-### get a company
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies/8
+#### POST /api/stats_profiles
+Create a stats profile directly
+Body Schema:
+```stats_profile:
+  type: object
+  properties:
+    company_id:
+      type: integer
+      example: 1
+    year:
+      type: string
+      example: 2018
+    min:
+      type: float
+      example: 34.60
+    max:
+      type: float
+      example: 38.86
+    avg:
+      type: float
+      example: 35.98
+    ending:
+      type: float
+      example 37.55
+    volatility:
+      type: float
+      example: 1.35
+    annual_change:
+      type: float
+      example: 3.5
+```
 
-### create a company
-- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/companies -d '{"company": {"name": "The Home Depot Inc.", "symbol": "HD"}}'
+#### POST /api/stats_profiles/create_all_resources
+Create a stats profile with a company name, symbol and year
+```stats_profile:
+  type: object
+  properties:
+    symbol:
+      type: integer
+      example: MDLZ
+    name:
+      type: string
+      example: Mondelez International Inc.
+    year:
+      type: string
+      example: 2018
+```
 
-### delete a company
-- curl -v -H "Content-Type: application/json" -X DELETE http://localhost:3000/api/companies/3
+#### UPDATE /api/stats_profiles/:id
+Body Schema: see POST
 
-
+#### DELETE /api/stats_profiles/:id
 
 
 Things you may want to cover:
