@@ -58,18 +58,6 @@
 - curl -v -H "Content-Type: application/json" -X DELETE http://localhost:3000/api/companies/3
 
 
-## Years
-### get all years
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/years
-
-### get a year
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/years/2
-
-### get create a year
-- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/years -d '{"year": {"year": "2018", "company_id": 8, "stats_profile_id": 9}}'
-
-### delete a year
-- curl -v -H "Content-Type: application/json" -X DELETE http://localhost:3000/api/years/3
 
 
 Things you may want to cover:

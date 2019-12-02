@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :item do
+  factory :stats_profile do
     company_id { nil }
     year { Faker::Number.within(range: 2000..2018) }
     min { Faker::Number.decimal(l_digits: 2) }

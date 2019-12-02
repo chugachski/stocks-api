@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Companies API', type: :request do
   # init test data
-  let!(:companies) { FactoryBot.create_list(:company, 10) }
+  let!(:companies) { FactoryBot.create_list(:company, 5) }
   let(:company_id) { companies.first.id }
 
   describe 'GET /api/companies' do
@@ -10,9 +10,9 @@ RSpec.describe 'Companies API', type: :request do
     before { get '/api/companies' }
 
     it 'returns companies' do
-      # note: json custom helper parses the json resp into ruby hash
+      # note: json custom helper parses the json resp into ruby hash (see request_spec_helper)
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json.size).to eq(5)
     end
 
     it 'returns status code 200' do
