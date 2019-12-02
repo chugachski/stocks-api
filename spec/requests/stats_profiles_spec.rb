@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'StatsProfiles API', type: :request do
   # init test data
   let!(:company) { FactoryBot.create(:company) }
-  let!(:stats_profiles) { FactoryBot.create_list(:stats_profile, 5, company_id: company.id) } # NOTE: faker may gen the same year 2x causing a validation error
+  let!(:stats_profiles) { FactoryBot.create_list(:stats_profile, 10, company_id: company.id) }
   let(:company_id) { company.id }
   let(:stats_profile_id) { stats_profiles.first.id }
 
@@ -14,7 +14,7 @@ RSpec.describe 'StatsProfiles API', type: :request do
     it 'returns stats_profiles' do
       # note: json custom helper parses the json resp into ruby hash (see request_spec_helper)
       expect(json).not_to be_empty
-      expect(json.size).to eq(5)
+      expect(json.size).to eq(10)
     end
 
     it 'returns status code 200' do
