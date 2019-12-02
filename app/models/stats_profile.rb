@@ -1,4 +1,5 @@
 class StatsProfile < ApplicationRecord
+  validates :year, presence: true
   validates :year, uniqueness: { scope: :company_id, message: "can only be one record for a given company and year" }
 
   scope :by_year, ->(year) { where(year: year) }
