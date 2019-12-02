@@ -1,13 +1,10 @@
-# require 'faraday'
-
 class Api::CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :update, :destroy]
 
   # GET /api/companies
   def index
-    order_by = params[:order_by].to_sym
-    order = params[:order].nil? ? :asc : params[:order].to_sym
-    @companies = Company.order(order_by => order)
+    direction = params[:order].nil? ? :asc : params[:order]
+    @companies = Company.order(name: direction)
   end
 
   # GET /api/companies/1

@@ -1,5 +1,3 @@
-# require 'faraday'
-
 class Api::StatsProfilesController < ApplicationController
     before_action :set_stats_profile, only: [:show, :update, :destroy]
 
@@ -40,41 +38,40 @@ class Api::StatsProfilesController < ApplicationController
 
     # POST /api/stats_profiles/create_all_resources
     def create_all_resources
-      symbol = stats_profile_company_params[:company][:symbol]
-      name = stats_profile_company_params[:company][:name]
-      year = stats_profile_company_params[:company][:year]
+      symbol = stats_profile_all_resources_params[:company][:symbol]
+      name = stats_profile_all_resources_params[:company][:name]
+      year = stats_profile_all_resources_params[:company][:year]
 
       stats = ExternalApi::Stock.get_monthly_prices({ symbol: symbol, start: year + "-01-01", end: year + "-12-01" })
 
-      @stats_profile = StatsProfile.create(stats)
-      @company = @stats_profile.companies.create({ name: name, symbol: symbol })
-      @year = @stats_profile.years.update({ year: year, company_id: Company.last[:id], stats_profile_id: StatsProfile.last[:id] })
+      @company = Company.find_or_create_by({ name: name, symbol: symbol })
+      @stats_profile = StatsProfile.create(stats.merge({ company_id: @company[:id], year: year }))
 
-      if @stats_profile.save && @company.save
-        render :all, status: :created, location: api_stats_profile_url(@stats_profile)
+      if @stats_profile.save
+        render :all_resources, status: :created, location: api_stats_profile_url(@stats_profile)
       else
         render json: @stats_profile.errors, status: :unprocessable_entity
       end
     end
 
     def all_companies_by_year
-      @year = params["year"] # required
+      year = params["year"] # required
       @stat = params["stat"].to_sym # required
-      order = params["order"].nil? ? :asc : params["order"].to_sym # optional
-
-      year_ids = Year.where(year: @year).map { |year| year.id }
+      order = params["order"].nil? ? :asc : params["order"].to_sym # optional, defaults to asc order
 
       case @stat
       when :volatility
-        @stats_profiles = StatsProfile.by_ids(year_ids).by_volatility(order)
+        @stats_profiles = StatsProfile.by_year(year).by_volatility(order)
       when :annual_change
-        @stats_profiles = StatsProfile.by_ids(year_ids).by_annual_change(order)
+        @stats_profiles = StatsProfile.by_year(year).by_annual_change(order)
       when :min
-        @stats_profiles = StatsProfile.by_ids(year_ids).by_min(order)
+        @stats_profiles = StatsProfile.by_year(year).by_min(order)
       when :max
-        @stats_profiles = StatsProfile.by_ids(year_ids).by_max(order)
+        @stats_profiles = StatsProfile.by_year(year).by_max(order)
       when :avg
-        @stats_profiles = StatsProfile.by_ids(year_ids).by_avg(order)
+        @stats_profiles = StatsProfile.by_year(year).by_avg(order)
+      when :ending
+        @stats_profiles = StatsProfile.by_year(year).by_ending(order)
       else
         @stats_profiles = StatsProfile.all
       end
@@ -83,23 +80,24 @@ class Api::StatsProfilesController < ApplicationController
     end
 
     def all_years_by_company
-      company = params["symbol"].to_sym # required
+      symbol = params["symbol"].to_sym # required
       @stat = params["stat"].to_sym # required
       order = params["order"].nil? ? :asc : params["order"].to_sym # optional
-
-      company_ids = Company.where(symbol: "HD").map { |company| company.id }
+      company_id = Company.find_by(symbol: symbol)[:id]
 
       case @stat
       when :volatility
-        @stats_profiles = StatsProfile.by_ids(company_ids).by_volatility(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_volatility(order)
       when :annual_change
-        @stats_profiles = StatsProfile.by_ids(company_ids).by_annual_change(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_annual_change(order)
       when :min
-        @stats_profiles = StatsProfile.by_ids(company_ids).by_min(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_min(order)
       when :max
-        @stats_profiles = StatsProfile.by_ids(company_ids).by_max(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_max(order)
       when :avg
-        @stats_profiles = StatsProfile.by_ids(company_ids).by_avg(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_avg(order)
+      when :ending
+        @stats_profiles = StatsProfile.by_company(company_id).by_ending(order)
       else
         @stats_profiles = StatsProfile.all
       end
@@ -113,10 +111,10 @@ class Api::StatsProfilesController < ApplicationController
     end
 
     def stats_profile_params
-      params.require(:stats_profile).permit(:min, :max, :avg, :volatility, :annual_change)
+      params.require(:stats_profile).permit(:company_id, :year, :min, :max, :avg, :ending, :volatility, :annual_change)
     end
 
-    def stats_profile_company_params
+    def stats_profile_all_resources_params
       params.require(:stats_profile).permit(:company => [ :symbol, :name, :year ])
     end
 end

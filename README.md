@@ -32,7 +32,9 @@
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/stats_profiles/11
 
 ### create a stats profile
-- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles/company -d '{"stats_profile": {"company": {"symbol": "KODK", "name": "Eastman Kodak Company", "year": "2018"}}}'
+- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles -d '{"stats_profile": {"company_id": 1, "year": "2014", "min": 34.54, "max": 39.90, "avg": 37.84, "ending": 36.64, "volatility": 1.65, "annual_change": 5.3}}'
+
+- curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles/create_all_resources -d '{"stats_profile": {"company": {"symbol": "KODK", "name": "Eastman Kodak Company", "year": "2018"}}}'
 
 ### delete a stats profile
 - curl -v -H "Content-Type: application/json" -X DELETE http://localhost:3000/api/stats_profiles/9
@@ -44,7 +46,7 @@
 
 ### get all companies
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies --data-urlencode 'order-by=name' --data-urlencode 'order=desc'
+- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies --data-urlencode 'order=desc'
 
 ### get a company
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies/8

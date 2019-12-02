@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2019_12_01_204103) do
     t.string "symbol"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_companies_on_name", unique: true
+    t.index ["symbol"], name: "index_companies_on_symbol", unique: true
   end
 
   create_table "stats_profiles", force: :cascade do |t|
