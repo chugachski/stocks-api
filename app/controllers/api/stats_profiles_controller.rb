@@ -1,9 +1,14 @@
 class Api::StatsProfilesController < ApplicationController
     before_action :set_stats_profile, only: [:show, :update, :destroy]
 
+    after_action only: [:index] do
+      set_pagination_headers :stats_profiles
+    end
+
     # GET /api/stats_profiles
     def index
-      @stats_profiles = StatsProfile.all
+      # @stats_profiles = StatsProfile.all
+      @stats_profiles = StatsProfile.page(page).per(per_page)
     end
 
     # GET /api/stats_profiles/1
@@ -116,5 +121,13 @@ class Api::StatsProfilesController < ApplicationController
 
     def stats_profile_all_resources_params
       params.require(:stats_profile).permit(:company => [ :symbol, :name, :year ])
+    end
+
+    def page
+      page = params[:page] || 1
+    end
+
+    def per_page
+      per_page = params[:per_page] || 10
     end
 end

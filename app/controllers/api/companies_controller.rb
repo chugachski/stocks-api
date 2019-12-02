@@ -1,10 +1,13 @@
 class Api::CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :update, :destroy]
 
+  after_action only: [:index] do
+    set_pagination_headers :companies
+  end
+
   # GET /api/companies
   def index
-    direction = params[:order].nil? ? :asc : params[:order]
-    @companies = Company.order(name: direction)
+    @companies = Company.order(name: direction).page(page).per(per_page)
   end
 
   # GET /api/companies/1
@@ -49,5 +52,17 @@ class Api::CompaniesController < ApplicationController
 
   def company_params
     params.require(:company).permit(:name, :symbol)
+  end
+
+  def direction
+    direction = params[:order] || :asc
+  end
+
+  def page
+    page = params[:page] || 1
+  end
+
+  def per_page
+    per_page = params[:per_page] || 10
   end
 end

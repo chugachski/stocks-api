@@ -6,7 +6,7 @@
 
 #### get all companies
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies --data-urlencode 'order=desc'
+- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies --data-urlencode order=asc --data-urlencode page=1 --data-urlencode per_page=5
 
 #### get a company
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/companies/5
@@ -20,13 +20,13 @@
 
 ## Stats Profiles
 #### get all stats profiles
-- curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/stats_profiles
+- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles --data-urlencode page=1 --data-urlencode per_page=5
 
 #### get stats profiles for all companies by year
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_companies_by_year --data-urlencode year=2017 --data-urlencode stat=volatility --data-urlencode order=asc
+- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_companies_by_year --data-urlencode year=2017 --data-urlencode stat=volatility --data-urlencode order=asc --data-urlencode page=1 --data-urlencode per_page=5
 
 #### get stats profiles for all years by company
-- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_years_by_company --data-urlencode symbol=HD --data-urlencode stat=annual_change --data-urlencode order=desc
+- curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_years_by_company --data-urlencode symbol=HD --data-urlencode stat=annual_change --data-urlencode order=desc --data-urlencode page=1 --data-urlencode per_page=5
 
 #### get a stats profile
 - curl -v -H "Content-Type: application/json" -X GET http://localhost:3000/api/stats_profiles/5
