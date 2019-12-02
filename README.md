@@ -20,6 +20,32 @@ http://example.com
 ### Running Tests (Rspec)
 run `bundle exec rspec`
 
+### Description
+This API consumes data from the [Tradier API](https://documentation.tradier.com/index.html) and [Alpha Vantage API](https://www.alphavantage.co/documentation/) to allow users to view and compare historical price data for stocks they are interested in.
+
+To get started, try making a GET request to `/api/companies/symbols?name=paypal` to get a list of the best matching symbols. Let's use curl:
+```curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/companies/symbols --data-urlencode name=paypal
+```
+
+(You can use whatever tool to make requests you want. To view these requests in a nice format, I downloaded [jq](https://stedolan.github.io/jq/), and pipe into it.)
+
+Next, to create a stats profile with different price annual price statistics for PayPal, make a post request to `/api/stats_profiles/create_all_resources` with a request body including the parameters you want:
+```curl -v -H "Content-Type: application/json" -X POST http://localhost:3000/api/stats_profiles/create_all_resources -d '{"stats_profile": {"company": {"symbol": "PYPL", "name": "PayPal Holdings Inc.", "year": "2018"}}}'
+```
+The application will first create a record in the `companies` table if it doesn't already exist. Then it will fetch the price monthly price data from the Tradier API, calculate statistics (min, max, average, ending, volatility and annual percent change), and create an entry in the `stats profiles table`.
+
+But it's more interesting to compare the statistics. First, let's show annual change figures for all companies with 2018 statistics and order them from highest to lowest:
+```curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_companies_by_year --data-urlencode year=2018 --data-urlencode stat=annual_change --data-urlencode order=desc
+```
+
+We can also see a particular company's data over time. To show volatility for Home Depot for each year from low to high, run:
+```curl -v -H "Content-Type: application/json" -X GET -G http://localhost:3000/api/stats_profiles/all_years_by_company --data-urlencode symbol=HD --data-urlencode stat=volatility
+```
+
+For all the possible endpoints and options, see the endpoint documentation below.
+
+Note: instead of a single `searches` table, this API has two tables named `companies` and `stats profiles`. Model validations ensure that posting the same data won't result in a duplicate entry.
+
 ### Endpoint Documentation
 See examples of cURL requests in examples.md
 
