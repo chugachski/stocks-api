@@ -17,6 +17,9 @@ http://example.com
   - in case of error: `FATAL: Peer authentication failed for user`, edit `pg_hba.conf` such that the method for local connections is `md5`
 4. rake db:migrate
 
+### Running Tests (Rspec)
+run `bundle exec rspec`
+
 ### Endpoint Documentation
 See examples of cURL requests in examples.md
 
@@ -27,23 +30,18 @@ See examples of cURL requests in examples.md
 
 ### Companies
 #### GET /api/companies
-| Parameter    | Type     | Required  | Values      | Default   |
-| ------------ | -------- | --------- | ----------- | --------- |
-| order        | string   | Optional  | asc, desc   | asc       |
+| Parameter    | Type     | Required  | Values         | Default   |
+| ------------ | -------- | --------- | -------------- | --------- |
+| order        | string   | Optional  | asc, desc      | asc       |
+| page         | integer  | Optional  | 1, 2, 3, etc.  | 1         |
+| per_page     | integer  | Optional  | 5, 10, 25, etc | 10        |
 
-#### GET /api/stats_profiles/all_companies_by_year
-| Parameter    | Type     | Required  | Example values                                   | Default   |
-| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
-| year         | string   | Required  | 2018                                             | n/a       |
-| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
-| order        | string   | Optional  | asc, desc                                        | asc       |
+#### GET /api/companies/symbols
+Get a list of best matching symbols
 
-#### GET /api/stats_profiles/all_years_by_company
-| Parameter    | Type     | Required  | Example values                                   | Default   |
-| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
-| symbol       | string   | Required  | HD                                               | n/a       |
-| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
-| order        | string   | Optional  | asc, desc                                        | asc       |
+| Parameter    | Type     | Required  | Example value | Default   |
+| ------------ | -------- | --------- | ------------- | --------- |
+| name         | string   | Required  | home depot    | n/a       |
 
 #### GET /api/companies/:id
 
@@ -65,16 +63,33 @@ Body Schema: see POST
 
 #### DELETE /api/companies/:id
 
-#### GET /api/companies/symbols
-Get a list of best matching symbols
 
-| Parameter    | Type     | Required  | Example value | Default   |
-| ------------ | -------- | --------- | ------------- | --------- |
-| name         | string   | Required  | home depot    | n/a       |
 
 
 ### Stats Profiles
 #### GET /api/stats_profiles
+| Parameter    | Type     | Required  | Values         | Default   |
+| ------------ | -------- | --------- | -------------- | --------- |
+| page         | integer  | Optional  | 1, 2, 3, etc.  | 1         |
+| per_page     | integer  | Optional  | 5, 10, 25, etc | 10        |
+
+#### GET /api/stats_profiles/all_companies_by_year
+| Parameter    | Type     | Required  | Example values                                   | Default   |
+| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
+| year         | string   | Required  | 2018                                             | n/a       |
+| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
+| order        | string   | Optional  | asc, desc                                        | asc       |
+| page         | integer  | Optional  | 1, 2, 3, etc.                                    | 1         |
+| per_page     | integer  | Optional  | 5, 10, 25, etc.                                  | 10        |
+
+#### GET /api/stats_profiles/all_years_by_company
+| Parameter    | Type     | Required  | Example values                                   | Default   |
+| ------------ | -------- | --------- | ------------------------------------------------ | --------- |
+| symbol       | string   | Required  | HD                                               | n/a       |
+| stat         | string   | Required  | min, max, avg, ending, volatility, annual_change | n/a       |
+| order        | string   | Optional  | asc, desc                                        | asc       |
+| page         | integer  | Optional  | 1, 2, 3, etc.                                    | 1         |
+| per_page     | integer  | Optional  | 5, 10, 25, etc.                                  | 10        |
 
 #### GET /api/stats_profiles/:id
 
