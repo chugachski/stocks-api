@@ -21,7 +21,7 @@ module Calculate
   end
 
   def self.annual_change(values = [])
-    values.last - values.first / values.first * 100
+    percent = (values.last - values.first) / values.first * 100
   end
 
   def self.sample_variance(values = [])
