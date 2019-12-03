@@ -91,17 +91,17 @@ class Api::StatsProfilesController < ApplicationController
 
       case @stat
       when :volatility
-        @stats_profiles = StatsProfile.by_company(company_id).by_volatility(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_volatility(order).page(page).per(per_page)
       when :annual_change
-        @stats_profiles = StatsProfile.by_company(company_id).by_annual_change(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_annual_change(order).page(page).per(per_page)
       when :min
-        @stats_profiles = StatsProfile.by_company(company_id).by_min(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_min(order).page(page).per(per_page)
       when :max
-        @stats_profiles = StatsProfile.by_company(company_id).by_max(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_max(order).page(page).per(per_page)
       when :avg
-        @stats_profiles = StatsProfile.by_company(company_id).by_avg(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_avg(order).page(page).per(per_page)
       when :ending
-        @stats_profiles = StatsProfile.by_company(company_id).by_ending(order)
+        @stats_profiles = StatsProfile.by_company(company_id).by_ending(order).page(page).per(per_page)
       else
         @stats_profiles = StatsProfile.all
       end
