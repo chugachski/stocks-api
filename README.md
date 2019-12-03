@@ -1,9 +1,9 @@
 # Stocks API
-Request/response: https://warm-castle-30365.herokuapp.com/api
+**Request/response:** https://warm-castle-30365.herokuapp.com/api
 
 ### Contact
-Nate Smith
-natesmith.copper@gmail.com
+- Nate Smith
+- natesmith.copper@gmail.com
 
 ### Dependencies
 - Rails version: 2.6.5
