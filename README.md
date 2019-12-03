@@ -4,6 +4,7 @@
 ### Contact
 - Nate Smith
 - natesmith.copper@gmail.com
+- [linked in](https://www.linkedin.com/in/nathansmithcodes/)
 
 ### Dependencies
 - Rails version: 2.6.5
