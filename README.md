@@ -1,5 +1,5 @@
 # Stocks API
-https://warm-castle-30365.herokuapp.com
+Request/response: https://warm-castle-30365.herokuapp.com/api
 
 ### Contact
 Nate Smith
