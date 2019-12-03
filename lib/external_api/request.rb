@@ -1,3 +1,4 @@
+# adapted from source: https://revs.runtime-revolution.com/integrating-a-third-party-api-with-rails-5-134f960ddbba
 class Request
   class << self
     def where(source, resource_path, query = {})

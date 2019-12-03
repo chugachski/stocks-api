@@ -5,7 +5,6 @@
 curl -v -H "Content-Type: application/json" -X GET -G https://warm-castle-30365.herokuapp.com/api/companies/symbols --data-urlencode 'name=home depot'
 
 #### get all companies
-curl -v -H "Content-Type: application/json" -X GET https://warm-castle-30365.herokuapp.com/api/companies
 curl -v -H "Content-Type: application/json" -X GET -G https://warm-castle-30365.herokuapp.com/api/companies --data-urlencode order=asc --data-urlencode page=1 --data-urlencode per_page=5
 
 #### get a company
