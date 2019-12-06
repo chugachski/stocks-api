@@ -61,7 +61,6 @@ class Api::StatsProfilesController < ApplicationController
     def all_companies_by_year
       year = params["year"] # required
       @stat = params["stat"].to_sym # required
-      order = params["order"].nil? ? :asc : params["order"].to_sym # optional, defaults to asc order
 
       case @stat
       when :volatility
@@ -86,7 +85,6 @@ class Api::StatsProfilesController < ApplicationController
     def all_years_by_company
       symbol = params["symbol"].to_sym # required
       @stat = params["stat"].to_sym # required
-      order = params["order"].nil? ? :asc : params["order"].to_sym # optional
       company_id = Company.find_by(symbol: symbol)[:id]
 
       case @stat
@@ -120,6 +118,14 @@ class Api::StatsProfilesController < ApplicationController
 
     def stats_profile_all_resources_params
       params.require(:stats_profile).permit(:company => [ :symbol, :name, :year ])
+    end
+
+    def order
+      order = params[:order] || 'asc'
+    end
+
+    def order_by
+      order_by = params[:order_by] || 'id'
     end
 
     def page
