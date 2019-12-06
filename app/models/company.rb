@@ -1,6 +1,8 @@
 class Company < ApplicationRecord
   validates :name, :symbol, presence: true, uniqueness: true
-  # validates :name, :symbol, presence: { message: "both name and symbol required" }, uniqueness: true
+
+  scope :order_by_name, ->(dir) { order(name: dir) }
+  scope :order_by_id, ->(dir) { order(id: dir) }
 
   has_many :stats_profiles, dependent: :destroy
 end

@@ -7,7 +7,11 @@ class Api::CompaniesController < ApplicationController
 
   # GET /api/companies
   def index
-    @companies = Company.order(name: direction).page(page).per(per_page)
+    if order_by == "name"
+      @companies = Company.order_by_name(direction).page(page).per(per_page)
+    else
+      @companies = Company.order_by_id(direction).page(page).per(per_page)
+    end
   end
 
   # GET /api/companies/1
@@ -56,6 +60,10 @@ class Api::CompaniesController < ApplicationController
 
   def direction
     direction = params[:order] || :asc
+  end
+
+  def order_by
+    order_by = params[:order_by] || :id
   end
 
   def page
