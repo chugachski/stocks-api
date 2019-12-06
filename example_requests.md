@@ -13,6 +13,9 @@ curl -v -H "Content-Type: application/json" -X GET https://warm-castle-30365.her
 #### create a company
 curl -v -H "Content-Type: application/json" -X POST https://warm-castle-30365.herokuapp.com/api/companies -d '{"company": {"name": "The Home Depot Inc.", "symbol": "HD"}}'
 
+#### update a company
+curl -v -H "Content-Type: application/json" -X PUT http://localhost:3000/api/companies/1 -d '{"company": {"name": "The Home Depot Incorporated"}}'
+
 #### delete a company
 curl -v -H "Content-Type: application/json" -X DELETE https://warm-castle-30365.herokuapp.com/api/companies/5
 
@@ -35,6 +38,9 @@ curl -v -H "Content-Type: application/json" -X POST https://warm-castle-30365.he
 
 #### create a stats profile and a company if it doesn't already exist
 curl -v -H "Content-Type: application/json" -X POST https://warm-castle-30365.herokuapp.com/api/stats_profiles/create_all_resources -d '{"stats_profile": {"company": {"symbol": "MDLZ", "name": "Mondelez International Inc.", "year": "2016"}}}'
+
+#### update a stats profile
+curl -v -H "Content-Type: application/json" -X PUT http://localhost:3000/api/stats_profiles/27 -d '{"stats_profile": {"annual_change": 10}}'
 
 ### delete a stats profile
 curl -v -H "Content-Type: application/json" -X DELETE https://warm-castle-30365.herokuapp.com/api/stats_profiles/5

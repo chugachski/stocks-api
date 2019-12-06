@@ -70,9 +70,21 @@ See examples of cURL requests in examples.md
 #### GET /api/companies
 | Parameter    | Type     | Required  | Values         | Default   |
 | ------------ | -------- | --------- | -------------- | --------- |
+| order_by     | string   | Optional  | id, name       | id        |
 | order        | string   | Optional  | asc, desc      | asc       |
 | page         | integer  | Optional  | 1, 2, 3, etc.  | 1         |
 | per_page     | integer  | Optional  | 5, 10, 25, etc | 10        |
+
+**Response:**
+```
+[
+  {
+    "id": 1,
+    "name": "The Home Depot Inc.",
+    "symbol": "HD"
+  },
+]
+```
 
 #### GET /api/companies/symbols
 Get a list of best matching symbols
@@ -81,10 +93,28 @@ Get a list of best matching symbols
 | ------------ | -------- | --------- | ------------- | --------- |
 | name         | string   | Required  | home depot    | n/a       |
 
+**Response:**
+```
+[
+  {
+    "name": "Hyatt Hotels Corporation",
+    "symbol": "H"
+  },
+]
+```
+
 #### GET /api/companies/:id
+**Response:**
+```
+{
+  "id": 5,
+  "name": "Cisco Systems Inc.",
+  "symbol": "CSCO"
+}
+```
 
 #### POST /api/companies
-Body Schema:
+**Body Schema:**
 ```company:
   type: object
   properties:
@@ -96,8 +126,18 @@ Body Schema:
       example: HD
 ```
 
+**Response:**
+```
+{
+  "id": 19,
+  "name": "Hyatt Hotels Corporation",
+  "symbol": "H"
+}
+```
+
 #### UPDATE /api/companies/:id
-Body Schema: see POST
+**Body Schema:** see POST
+**Response:** see POST
 
 #### DELETE /api/companies/:id
 
@@ -111,6 +151,23 @@ Body Schema: see POST
 | page         | integer  | Optional  | 1, 2, 3, etc.  | 1         |
 | per_page     | integer  | Optional  | 5, 10, 25, etc | 10        |
 
+**Response:**
+```
+[
+  {
+    "id": 1,
+    "company_id": 1,
+    "year": "2018",
+    "min": 171.82,
+    "max": 207.15,
+    "avg": 188.443333333333,
+    "ending": 171.82,
+    "volatility": 11.4534213493637,
+    "annual_change": 71.82
+  },
+]
+```
+
 #### GET /api/stats_profiles/all_companies_by_year
 | Parameter    | Type     | Required  | Example values                                   | Default   |
 | ------------ | -------- | --------- | ------------------------------------------------ | --------- |
@@ -119,6 +176,17 @@ Body Schema: see POST
 | order        | string   | Optional  | asc, desc                                        | asc       |
 | page         | integer  | Optional  | 1, 2, 3, etc.                                    | 1         |
 | per_page     | integer  | Optional  | 5, 10, 25, etc.                                  | 10        |
+
+**Response:**
+```
+[
+  {
+    "company": "Intel Corporation",
+    "year": "2017",
+    "volatility": 4.43634780176012
+  },
+]
+```
 
 #### GET /api/stats_profiles/all_years_by_company
 | Parameter    | Type     | Required  | Example values                                   | Default   |
@@ -129,11 +197,37 @@ Body Schema: see POST
 | page         | integer  | Optional  | 1, 2, 3, etc.                                    | 1         |
 | per_page     | integer  | Optional  | 5, 10, 25, etc.                                  | 10        |
 
+**Response:**
+```
+[
+  {
+    "company": "The Home Depot Incorporated",
+    "year": "2017",
+    "annual_change": 89.53
+  },
+]
+```
+
 #### GET /api/stats_profiles/:id
+
+**Response:**
+```
+{
+  "id": 5,
+  "company_id": 2,
+  "year": "2018",
+  "min": 46.88,
+  "max": 55.2,
+  "avg": 49.415,
+  "ending": 46.93,
+  "volatility": 2.46772438419764,
+  "annual_change": -53.07
+}
+```
 
 #### POST /api/stats_profiles
 Create a stats profile directly
-Body Schema:
+**Body Schema:**
 ```stats_profile:
   type: object
   properties:
@@ -163,6 +257,21 @@ Body Schema:
       example: 3.5
 ```
 
+**Response:**
+```
+{
+  "id": 26,
+  "company_id": 20,
+  "year": "2014",
+  "min": 34.54,
+  "max": 39.9,
+  "avg": 37.84,
+  "ending": 36.64,
+  "volatility": 1.65,
+  "annual_change": 5.3
+}
+```
+
 #### POST /api/stats_profiles/create_all_resources
 Create a stats profile with a company name, symbol and year
 ```stats_profile:
@@ -179,7 +288,33 @@ Create a stats profile with a company name, symbol and year
       example: 2018
 ```
 
+**Response:**
+```{
+  "stats_profile": {
+    "id": 27,
+    "company_id": 21,
+    "year": "2016",
+    "min": 741.8,
+    "max": 813.97,
+    "avg": 774.93,
+    "ending": 789.79,
+    "volatility": 21.68390982859286,
+    "annual_change": 2.918985131419484,
+    "created_at": "2019-12-06T21:07:41.982Z",
+    "updated_at": "2019-12-06T21:07:41.982Z"
+  },
+  "company": {
+    "id": 21,
+    "name": "AutoZone Inc.",
+    "symbol": "AZO",
+    "created_at": "2019-12-06T21:07:41.973Z",
+    "updated_at": "2019-12-06T21:07:41.973Z"
+  }
+}
+```
+
 #### UPDATE /api/stats_profiles/:id
-Body Schema: see POST
+**Body Schema:** see POST
+**Response:** see Post
 
 #### DELETE /api/stats_profiles/:id
