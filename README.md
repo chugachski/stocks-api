@@ -54,9 +54,10 @@ We can also see a particular company's data over time. To show volatility for Ho
 curl -v -H "Content-Type: application/json" -X GET -G https://warm-castle-30365.herokuapp.com/api/stats_profiles/all_years_by_company --data-urlencode symbol=HD --data-urlencode stat=volatility
 ```
 
-For all the possible endpoints and options, see the endpoint documentation below.
+For all the possible endpoints and options, see the endpoint documentation below. If desired, view pagination data in the Link header.
 
 Note: instead of a single `searches` table, this API has two tables named `companies` and `stats profiles`. Model validations ensure that posting the same data won't result in a duplicate entry.
+
 
 ### Endpoint Documentation
 See examples of cURL requests in examples.md
