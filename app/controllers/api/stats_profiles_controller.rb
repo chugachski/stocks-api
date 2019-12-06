@@ -59,8 +59,8 @@ class Api::StatsProfilesController < ApplicationController
     end
 
     def all_companies_by_year
-      year = params["year"] # required
-      @stat = params["stat"].to_sym # required
+      year = params["year"]
+      @stat = params["stat"].to_sym
 
       case @stat
       when :volatility
@@ -76,32 +76,33 @@ class Api::StatsProfilesController < ApplicationController
       when :ending
         @stats_profiles = StatsProfile.by_year(year).by_ending(order).page(page).per(per_page)
       else
-        @stats_profiles = StatsProfile.page(page).per(per_page)
+        raise InvalidStatsParameter
       end
 
       render :all_companies_by_year, status: :ok
     end
 
     def all_years_by_company
-      symbol = params["symbol"].to_sym # required
-      @stat = params["stat"].to_sym # required
-      company_id = Company.find_by(symbol: symbol)[:id]
+      symbol = params["symbol"].to_sym
+      @stat = params["stat"].to_sym
+      company = Company.find_by(symbol: symbol)
+      raise NoCompanyExists if company.nil?
 
       case @stat
       when :volatility
-        @stats_profiles = StatsProfile.by_company(company_id).by_volatility(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_volatility(order).page(page).per(per_page)
       when :annual_change
-        @stats_profiles = StatsProfile.by_company(company_id).by_annual_change(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_annual_change(order).page(page).per(per_page)
       when :min
-        @stats_profiles = StatsProfile.by_company(company_id).by_min(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_min(order).page(page).per(per_page)
       when :max
-        @stats_profiles = StatsProfile.by_company(company_id).by_max(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_max(order).page(page).per(per_page)
       when :avg
-        @stats_profiles = StatsProfile.by_company(company_id).by_avg(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_avg(order).page(page).per(per_page)
       when :ending
-        @stats_profiles = StatsProfile.by_company(company_id).by_ending(order).page(page).per(per_page)
+        @stats_profiles = StatsProfile.by_company(company[:id]).by_ending(order).page(page).per(per_page)
       else
-        @stats_profiles = StatsProfile.all
+        raise InvalidStatsParameter
       end
 
       render :all_years_by_company, status: :ok
@@ -126,6 +127,10 @@ class Api::StatsProfilesController < ApplicationController
 
     def order_by
       order_by = params[:order_by] || 'id'
+    end
+
+    def stat
+      stat = params[:stat]
     end
 
     def page
