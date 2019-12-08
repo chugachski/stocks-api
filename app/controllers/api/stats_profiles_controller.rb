@@ -1,6 +1,8 @@
 class Api::StatsProfilesController < ApplicationController
     before_action :set_stats_profile, only: [:show, :update, :destroy]
 
+    ALLOWED_STATS = [:min, :max, :avg, :ending, :volatility, :annual_change].freeze
+
     after_action only: [:index, :all_companies_by_year, :all_years_by_company] do
       set_pagination_headers :stats_profiles
     end
@@ -49,7 +51,7 @@ class Api::StatsProfilesController < ApplicationController
       stats = ExternalApi::Stock.get_monthly_prices({ symbol: symbol, start: year + "-01-01", end: year + "-12-01" })
 
       @company = Company.find_or_create_by({ name: name, symbol: symbol })
-      @stats_profile = StatsProfile.create(stats.merge({ company_id: @company[:id], year: year }))
+      @stats_profile = @company.stats_profiles.create(stats.merge({ year: year }))
 
       if @stats_profile.save
         render :all_resources, status: :created, location: api_stats_profile_url(@stats_profile)
@@ -62,19 +64,10 @@ class Api::StatsProfilesController < ApplicationController
       year = params["year"]
       @stat = params["stat"].to_sym
 
-      case @stat
-      when :volatility
-        @stats_profiles = StatsProfile.by_year(year).by_volatility(order).page(page).per(per_page)
-      when :annual_change
-        @stats_profiles = StatsProfile.by_year(year).by_annual_change(order).page(page).per(per_page)
-      when :min
-        @stats_profiles = StatsProfile.by_year(year).by_min(order).page(page).per(per_page)
-      when :max
-        @stats_profiles = StatsProfile.by_year(year).by_max(order).page(page).per(per_page)
-      when :avg
-        @stats_profiles = StatsProfile.by_year(year).by_avg(order).page(page).per(per_page)
-      when :ending
-        @stats_profiles = StatsProfile.by_year(year).by_ending(order).page(page).per(per_page)
+      @stats_profiles = StatsProfile.by_year(year).page(page).per(per_page)
+
+      if ALLOWED_STATS.include?(@stat)
+        @stats_profiles = @stats_profiles.send("by_#{@stat}", order)
       else
         raise InvalidStatsParameter
       end
@@ -83,24 +76,15 @@ class Api::StatsProfilesController < ApplicationController
     end
 
     def all_years_by_company
-      symbol = params["symbol"].to_sym
-      @stat = params["stat"].to_sym
       company = Company.find_by(symbol: symbol)
       raise NoCompanyExists if company.nil?
+      symbol = params["symbol"].to_sym
+      @stat = params["stat"].to_sym
 
-      case @stat
-      when :volatility
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_volatility(order).page(page).per(per_page)
-      when :annual_change
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_annual_change(order).page(page).per(per_page)
-      when :min
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_min(order).page(page).per(per_page)
-      when :max
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_max(order).page(page).per(per_page)
-      when :avg
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_avg(order).page(page).per(per_page)
-      when :ending
-        @stats_profiles = StatsProfile.by_company(company[:id]).by_ending(order).page(page).per(per_page)
+      @stats_profiles = StatsProfile.by_company(company[:id]).page(page).per(per_page)
+
+      if ALLOWED_STATS.include?(@stat)
+        @stats_profiles = @stats_profiles.send("by_#{@stat}", order)
       else
         raise InvalidStatsParameter
       end
