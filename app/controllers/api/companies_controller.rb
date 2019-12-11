@@ -5,37 +5,37 @@ class Api::CompaniesController < ApplicationController
     set_pagination_headers :companies
   end
 
-  # GET /api/companies
-  def index
-    if order_by == "name"
-      @companies = Company.order_by_name(direction).page(page).per(per_page)
-    else
-      @companies = Company.order_by_id(direction).page(page).per(per_page)
-    end
+  # GET /api/companies/symbols?name=coke
+  def symbols
+    @symbols = ExternalApi::Stock.lookup_symbols({ keywords: params[:name] })
   end
 
-  # GET /api/companies/1
-  def show
+  # GET /api/companies
+  def index
+    @companies = Company.page(page).per(per_page)
+    @companies = @companies.send("set_order", order_by, direction)
   end
 
   # POST /api/companies
   def create
-    @company = Company.new(company_params)
+    symbol = company_params[:symbol]
+    name = company_params[:name]
+    year = company_params[:year]
 
-    if @company.save
-      render :show, status: :created
+    stats = ExternalApi::Stock.get_monthly_prices({ symbol: symbol, start: year + "-01-01", end: year + "-12-01" })
+
+    @company = Company.find_or_create_by({ name: name, symbol: symbol })
+    @stats_profile = @company.stats_profiles.create(stats.merge({ year: year }))
+
+    if @stats_profile.save
+      render :show, status: :created, location: api_stats_profile_url(@company)
     else
-      render json: @company.errors, status: :unprocessable_entity
+      render json: @stats_profile.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /api/companies/1
-  def update
-    if @company.update(company_params)
-      render :show, status: :ok, location: api_company_url(@company)
-    else
-      render json: @company.errors, status: :unprocessable_entity
-    end
+  # POST /api/companies/refresh
+  def refresh
   end
 
   # DELETE /api/companies/1
@@ -44,18 +44,13 @@ class Api::CompaniesController < ApplicationController
     head :no_content
   end
 
-  # GET /api/companies/symbols?name=coke
-  def symbols
-    @symbols = ExternalApi::Stock.lookup_symbols({ keywords: params[:name] })
-  end
-
   private
   def set_company
     @company = Company.find(params[:id])
   end
 
   def company_params
-    params.require(:company).permit(:name, :symbol)
+    params.require(:company).permit(:name, :symbol, :year)
   end
 
   def direction

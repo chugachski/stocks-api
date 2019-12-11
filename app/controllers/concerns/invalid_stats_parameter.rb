@@ -8,7 +8,7 @@ class InvalidStatsParameter < StandardError
   end
 
   def message
-    "Request does not pass an acceptable stats parameter (required)"
+    "Request does not pass an acceptable stats parameter"
   end
 
   def stats
